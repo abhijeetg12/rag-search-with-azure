@@ -1,5 +1,3 @@
-# OpenAI.api_key = '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'
-
 # def create_prompt(context,query):
 #     header = "You are a helpful chatbot who is trying to answer the following query for an employee"
 #     return header + context + "\n\n" + query + "\n"

@@ -12,7 +12,7 @@ from azure.search.documents.indexes.models import *
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 # from azure_openai import *
-from config import *
+# from config import *
 from gpt_return_st import *
 
 import streamlit as st
@@ -24,11 +24,11 @@ user_input = st.text_input('Enter your question here:',
 
 if st.button('Submit'):
 
-    service_name = "YOUR-SEARCH-SERVICE-NAME"
+    # service_name = "YOUR-SEARCH-SERVICE-NAME"
     service_name = st.secrets["searchservice"]
-    key = "YOUR-SEARCH-SERVICE-ADMIN-API-KEY"
+    # key = "YOUR-SEARCH-SERVICE-ADMIN-API-KEY"
     key = st.secrets["searchkey"]
-
+    searchservice = st.secrets["searchservice"]
     endpoint = "https://{}.search.windows.net/".format(searchservice)
     index_name = st.secrets["index"]
 
@@ -40,7 +40,7 @@ if st.button('Submit'):
 
 
     KB_FIELDS_CONTENT = os.environ.get("KB_FIELDS_CONTENT") or "content"
-    KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or category
+    KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or "SEARCH"
     KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 
     exclude_category = None

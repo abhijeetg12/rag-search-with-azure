@@ -13,7 +13,7 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 # from azure_openai import *
 from config import *
-from gpt_return import *
+
 import streamlit as st
 
 st.header('Search Engine - Document')
@@ -52,9 +52,9 @@ if st.button('Submit'):
                             query_type=QueryType.SEMANTIC, 
                             query_language="en-us", 
                             query_speller="lexicon", 
-                            semantic_configuration_name="content-search", 
+                            semantic_configuration_name="match-content", 
                             top=3)
-    results = [doc[KB_FIELDS_SOURCEPAGE] + ": " +  doc[KB_FIELDS_CONTENT].replace("\n", "").replace("\r", "") for doc in r] #
+    results = [doc[KB_FIELDS_CONTENT].replace("\n", "").replace("\r", "") for doc in r] #doc[KB_FIELDS_SOURCEPAGE] + ": " + 
     content = "\n".join(results)
 
     references =[]

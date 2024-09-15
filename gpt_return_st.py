@@ -1,15 +1,12 @@
 # def create_prompt(context,query):
 #     header = "You are a helpful chatbot who is trying to answer the following query for an employee"
 #     return header + context + "\n\n" + query + "\n"
-import dotenv
-import os
 from openai import OpenAI 
+import streamlit as st
 
-dotenv.load_dotenv()
 client = OpenAI(
-    api_key = os.getenv('OPENAI_API_KEY')
+    api_key = st.secrets["OPENAI_API_KEY"]
 )
-
 def create_prompt(context,query):
     header = "Be a helpful company internal chatbot"
     return header + context + "\n\n" + query + "\n"

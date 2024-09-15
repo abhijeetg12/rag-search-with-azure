@@ -13,8 +13,7 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 # from azure_openai import *
 from config import *
-from gpt_return_st import *
-
+from gpt_return import *
 import streamlit as st
 
 st.header('Search Engine - Document')
@@ -25,12 +24,12 @@ user_input = st.text_input('Enter your question here:',
 if st.button('Submit'):
 
     service_name = "YOUR-SEARCH-SERVICE-NAME"
-    service_name = st.secrets["searchservice"]
+    service_name = searchservice
     key = "YOUR-SEARCH-SERVICE-ADMIN-API-KEY"
-    key = st.secrets["searchkey"]
+    key = searchkey
 
     endpoint = "https://{}.search.windows.net/".format(searchservice)
-    index_name = st.secrets["index"]
+    index_name = index
 
     azure_credential =  AzureKeyCredential(key)
 

@@ -5,7 +5,6 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 from gpt_return import *
-from config import *
 
 # Persona definitions
 PERSONAS = {

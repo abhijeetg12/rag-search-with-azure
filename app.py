@@ -72,7 +72,7 @@ if st.button('Submit') and user_input:
     search_client = SearchClient(endpoint=endpoint, index_name=index_name, credential=azure_credential)
 
     KB_FIELDS_CONTENT = os.environ.get("KB_FIELDS_CONTENT") or "content"
-    KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or category
+    KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or "SEARCH"
     KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 
     exclude_category = None

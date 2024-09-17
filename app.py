@@ -1,77 +1,142 @@
 import os
-import argparse
-import glob
-import html
-import io
-import re
 import time
-from pypdf import PdfReader, PdfWriter
+import streamlit as st
 from azure.core.credentials import AzureKeyCredential
-from azure.search.documents.indexes import SearchIndexClient
-from azure.search.documents.indexes.models import *
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
-# from azure_openai import *
-# from config import *
-from gpt_return_st import *
+from gpt_return import *
+from config import *
 
-import streamlit as st
+# Persona definitions
+PERSONAS = {
+    "Well Engineer": st.secrets["well_engineer"],
+    "PSD Manager": st.secrets["psd_manager"]
+    }
+# Initialize chat history storage in session state if not already present
+if 'conversation_history' not in st.session_state:
+    st.session_state.conversation_history = []
 
-st.header('Search Engine - Document')
+# Streamlit App Header
+st.set_page_config(page_title="Intelligent Document Query Chatbot", layout="wide")
+st.title("📄🔍 Document Search & Query Assistant")
 
-user_input = st.text_input('Enter your question here:', 
-                           'What are some compensations and benefits for an employee?')
+# Add logo at the top-left corner
+logo_url = "https://your-logo-url-here.com/logo.png"  # Replace with your logo URL or a local path
+st.markdown(
+    f"""
+    <style>
+    [data-testid="stAppViewContainer"] {{
+        padding-top: 10px;
+    }}
+    [data-testid="stHeader"] {{
+        display: none;
+    }}
+    .logo {{
+        position: absolute;
+        top: 0px;
+        right: 10px; /* Position logo to top-left */
+        z-index: 100;
+    }}
+    </style>
+    <div class="logo">
+        <img src="https://logos-world.net/wp-content/uploads/2023/05/SLB-Logo.png" width="50">
+    </div>
+    """, unsafe_allow_html=True)
 
-if st.button('Submit'):
+# Persona selection dropdown
+persona_selected = st.selectbox("Select a Persona:", options=list(PERSONAS.keys()))
 
-    # service_name = "YOUR-SEARCH-SERVICE-NAME"
+# Sidebar for Chat History
+with st.sidebar:
+    st.markdown("## Chat History 🗂️")
+    for i, (question, answer) in enumerate(st.session_state.conversation_history):
+        st.markdown(f"**Q{i+1}:** {question}")
+        st.markdown(f"**A{i+1}:** {answer}")
+        st.markdown("---")
+
+# User input field
+st.markdown("### 🤖 Ask your Question:")
+user_input = st.text_input('Enter your question here:', 'What are Sustainability initiatives take by SLB?')
+
+if st.button('Submit') and user_input:
+
+    # Azure Search Configuration
     service_name = st.secrets["searchservice"]
     # key = "YOUR-SEARCH-SERVICE-ADMIN-API-KEY"
     key = st.secrets["searchkey"]
     searchservice = st.secrets["searchservice"]
     endpoint = "https://{}.search.windows.net/".format(searchservice)
     index_name = st.secrets["index"]
+    azure_credential = AzureKeyCredential(key)
 
-    azure_credential =  AzureKeyCredential(key)
-
-    search_client = SearchClient(endpoint=endpoint,
-                                        index_name=index_name,
-                                        credential=azure_credential)
-
+   # Initialize Search Client
+    search_client = SearchClient(endpoint=endpoint, index_name=index_name, credential=azure_credential)
 
     KB_FIELDS_CONTENT = os.environ.get("KB_FIELDS_CONTENT") or "content"
-    KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or "SEARCH"
+    KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or category
     KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 
     exclude_category = None
+    filter = f"category ne '{exclude_category.replace("'", "''")}'" if exclude_category else None
 
-    print("Searching:", user_input)
-    print("-------------------")
-    filter = "category ne '{}'".format(exclude_category.replace("'", "''")) if exclude_category else None
-    r = search_client.search(user_input, 
-                            filter=filter,
-                            query_type=QueryType.SEMANTIC, 
-                            query_language="en-us", 
-                            query_speller="lexicon", 
-                            semantic_configuration_name="content-search", 
-                            top=3)
-    results = [doc[KB_FIELDS_SOURCEPAGE] + ": " +  doc[KB_FIELDS_CONTENT].replace("\n", "").replace("\r", "") for doc in r] #
-    content = "\n".join(results)
+    # Perform Search
+    results = search_client.search(user_input,
+                                   filter=filter,
+                                   query_type=QueryType.SEMANTIC,
+                                   query_language="en-us",
+                                   query_speller="lexicon",
+                                   semantic_configuration_name="content-search",
+                                   top=3)
 
-    references =[]
-    for result in results:
-        references.append(result.split(":")[0])
-    st.markdown("### References:")
+    # Extract and display references
+    references = []
+    content = ""
+    for doc in results:
+        content += doc[KB_FIELDS_CONTENT].replace("\n", "").replace("\r", "") + "\n"
+        references.append(doc[KB_FIELDS_SOURCEPAGE])
+
+    st.markdown("### 📑 References:")
     st.write(" , ".join(set(references)))
 
-    conversation=[{"role": "system", "content": "Answer ot the questions by the users in a crisp and short format."}]
-    prompt = create_prompt(content,user_input)            
-    conversation.append({"role": "assistant", "content": prompt})
+    # Persona Context
+    persona_description = PERSONAS[persona_selected]
+
+    # Add persona context and past conversation to the conversation history
+    conversation = [
+        {"role": "system", "content": persona_description},
+        {"role": "system", "content": "Answer to the user's question with a detailed explanation."}
+    ]
+
+    # Append previous conversation history if available
+    for question, answer in st.session_state.conversation_history:
+        conversation.append({"role": "user", "content": question})
+        conversation.append({"role": "assistant", "content": answer})
+
+    # Add the current user input as part of the ongoing conversation
+    prompt = create_prompt(content, user_input)
     conversation.append({"role": "user", "content": user_input})
+
+    # Query the LLM with the extended conversation history
     reply = generate_answer(conversation)
+    answer = reply.choices[0].message.content
 
-    st.markdown("### Answer is:")
-    # st.write(reply)
-    st.write(reply.choices[0].message.content)
+    # Display the answer
+    # st.markdown(f"### 💡 Answer from **{persona_selected}**:")
+    st.write(answer)
 
+    # Store the current question and answer in session history
+    st.session_state.conversation_history.append((user_input, answer))
 
+    # Add a time delay for better UI experience
+    time.sleep(1)
+
+# Footer with styling
+st.markdown("""
+    <style>
+        .css-1aumxhk {background-color: #f5f5f5;}
+        .stTextInput {border-radius: 10px;}
+        .stButton > button {border-radius: 10px; background-color: #4CAF50; color: white;}
+        .stMarkdown h2 {color: #4CAF50;}
+        .stMarkdown {font-size: 1.1rem;}
+    </style>
+""", unsafe_allow_html=True)

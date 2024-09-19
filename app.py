@@ -16,11 +16,11 @@ if 'conversation_history' not in st.session_state:
     st.session_state.conversation_history = []
 
 # Streamlit App Header
-st.set_page_config(page_title="Intelligent Document Query Chatbot", layout="wide")
-st.title("📄🔍 Document Search & Query Assistant")
+st.set_page_config(page_title=" My AskAI Query Chatbot", layout="wide")
+st.title("How may I help you today? ")
 
 # Add logo at the top-left corner
-logo_url = "https://your-logo-url-here.com/logo.png"  # Replace with your logo URL or a local path
+logo_url = "logo.png"  # Replace with your logo URL or a local path
 st.markdown(
     f"""
     <style>
@@ -38,7 +38,7 @@ st.markdown(
     }}
     </style>
     <div class="logo">
-        <img src="https://logos-world.net/wp-content/uploads/2023/05/SLB-Logo.png" width="50">
+        <img src="logo.png" width="50">
     </div>
     """, unsafe_allow_html=True)
 
@@ -103,7 +103,7 @@ if st.button('Submit') and user_input:
     # Add persona context and past conversation to the conversation history
     conversation = [
         {"role": "system", "content": persona_description},
-        {"role": "system", "content": "Answer to the user's question with a detailed explanation."}
+        {"role": "system", "content": "Answer to the user's queries"}
     ]
 
     # Append previous conversation history if available

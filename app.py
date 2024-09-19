@@ -6,6 +6,8 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 from gpt_return import *
 from PIL import Image
+import base64
+
 
 
 # Persona definitions
@@ -26,9 +28,14 @@ st.title("How may I help you today? ")
 logo_path = "logo.png"  # Local path to your logo
 
 # Load and display the logo
-logo_image = Image.open(logo_path)
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode()
 
-# Streamlit will automatically resize the image when using st.image's width parameter
+# Use base64 encoding for the image
+logo_base64 = get_base64_image(logo_path)
+
+# Use CSS to position the logo at the top-right corner
 st.markdown(
     f"""
     <style>
@@ -46,13 +53,10 @@ st.markdown(
     }}
     </style>
     <div class="logo">
-        <img src="data:image/png;base64,{st.image(logo_image, width=100)}" class="logo">
+        <img src="data:image/png;base64,{logo_base64}" width="100">
     </div>
     """, unsafe_allow_html=True
 )
-
-# Shrink the image by setting the width (adjust for 10x smaller based on original size)
-st.image(logo_image, width=100)
 # Persona selection dropdown
 persona_selected = st.selectbox("Select a Persona:", options=list(PERSONAS.keys()))
 

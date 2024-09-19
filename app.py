@@ -20,7 +20,9 @@ st.set_page_config(page_title=" My AskAI Query Chatbot", layout="wide")
 st.title("How may I help you today? ")
 
 # Add logo at the top-left corner
-logo_url = "logo.png"  # Replace with your logo URL or a local path
+logo_path = "logo.png"  # Local path to your logo
+
+# Use st.image to display the image
 st.markdown(
     f"""
     <style>
@@ -32,16 +34,19 @@ st.markdown(
     }}
     .logo {{
         position: absolute;
-        top: 0px;
-        right: 10px; /* Position logo to top-left */
+        top: 10px;
+        right: 10px;
         z-index: 100;
     }}
     </style>
-    <div class="logo">
-        <img src="logo.png" width="50">
-    </div>
-    """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True
+)
 
+# Display the image at the specified location using markdown
+st.markdown(
+    f'<img src="data:image/png;base64,{st.image(logo_path)}" class="logo" width="50">', 
+    unsafe_allow_html=True
+)
 # Persona selection dropdown
 persona_selected = st.selectbox("Select a Persona:", options=list(PERSONAS.keys()))
 

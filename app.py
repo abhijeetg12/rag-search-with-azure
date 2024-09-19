@@ -5,6 +5,8 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 from gpt_return import *
+from PIL import Image
+
 
 # Persona definitions
 PERSONAS = {
@@ -19,10 +21,14 @@ if 'conversation_history' not in st.session_state:
 st.set_page_config(page_title=" My AskAI Query Chatbot", layout="wide")
 st.title("How may I help you today? ")
 
+
 # Add logo at the top-left corner
 logo_path = "logo.png"  # Local path to your logo
 
-# Use st.image to display the image
+# Load and display the logo
+logo_image = Image.open(logo_path)
+
+# Streamlit will automatically resize the image when using st.image's width parameter
 st.markdown(
     f"""
     <style>
@@ -35,18 +41,15 @@ st.markdown(
     .logo {{
         position: absolute;
         top: 10px;
-        right: 10px;
+        left: 10px;
         z-index: 100;
     }}
     </style>
     """, unsafe_allow_html=True
 )
 
-# Display the image at the specified location using markdown
-st.markdown(
-    f'<img src="data:image/png;base64,{st.image(logo_path)}" class="logo" width="50">', 
-    unsafe_allow_html=True
-)
+# Shrink the image by setting the width (adjust for 10x smaller based on original size)
+st.image(logo_image, width=50)
 # Persona selection dropdown
 persona_selected = st.selectbox("Select a Persona:", options=list(PERSONAS.keys()))
 

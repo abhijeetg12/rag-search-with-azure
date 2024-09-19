@@ -40,14 +40,14 @@ st.markdown(
     f"""
     <style>
     [data-testid="stAppViewContainer"] {{
-        padding-top: 10px;
+        padding-top: 0px;
     }}
     [data-testid="stHeader"] {{
         display: none;
     }}
     .logo {{
         position: absolute;
-        top: 10px;
+        top: 0px;
         right: 10px;
         z-index: 100;
     }}

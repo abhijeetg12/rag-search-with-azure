@@ -33,7 +33,7 @@ st.markdown(
     f"""
     <style>
     [data-testid="stAppViewContainer"] {{
-        padding-top: 1px;
+        padding-top: 10px;
     }}
     [data-testid="stHeader"] {{
         display: none;
@@ -41,10 +41,13 @@ st.markdown(
     .logo {{
         position: absolute;
         top: 10px;
-        right: 0px;
+        right: 10px;
         z-index: 100;
     }}
     </style>
+    <div class="logo">
+        <img src="data:image/png;base64,{st.image(logo_image, width=100)}" class="logo">
+    </div>
     """, unsafe_allow_html=True
 )
 

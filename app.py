@@ -25,38 +25,38 @@ st.title("How may I help you today? ")
 
 
 # Add logo at the top-left corner
-logo_path = "logo.png"  # Local path to your logo
+# logo_path = "logo.png"  # Local path to your logo
 
 # Load and display the logo
-def get_base64_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode()
+# def get_base64_image(image_path):
+#     with open(image_path, "rb") as image_file:
+#         return base64.b64encode(image_file.read()).decode()
 
-# Use base64 encoding for the image
-logo_base64 = get_base64_image(logo_path)
+# # Use base64 encoding for the image
+# logo_base64 = get_base64_image(logo_path)
 
-# Use CSS to position the logo at the top-right corner
-st.markdown(
-    f"""
-    <style>
-    [data-testid="stAppViewContainer"] {{
-        padding-top: 0px;
-    }}
-    [data-testid="stHeader"] {{
-        display: none;
-    }}
-    .logo {{
-        position: absolute;
-        top: 0px;
-        right: 10px;
-        z-index: 100;
-    }}
-    </style>
-    <div class="logo">
-        <img src="data:image/png;base64,{logo_base64}" width="100">
-    </div>
-    """, unsafe_allow_html=True
-)
+# # Use CSS to position the logo at the top-right corner
+# st.markdown(
+#     f"""
+#     <style>
+#     [data-testid="stAppViewContainer"] {{
+#         padding-top: 0px;
+#     }}
+#     [data-testid="stHeader"] {{
+#         display: none;
+#     }}
+#     .logo {{
+#         position: absolute;
+#         top: 0px;
+#         right: 10px;
+#         z-index: 100;
+#     }}
+#     </style>
+#     <div class="logo">
+#         <img src="data:image/png;base64,{logo_base64}" width="100">
+#     </div>
+#     """, unsafe_allow_html=True
+# )
 # Persona selection dropdown
 persona_selected = st.selectbox("Select a Persona:", options=list(PERSONAS.keys()))
 

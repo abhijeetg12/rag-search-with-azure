@@ -33,7 +33,7 @@ st.markdown(
     f"""
     <style>
     [data-testid="stAppViewContainer"] {{
-        padding-top: 10px;
+        padding-top: 1px;
     }}
     [data-testid="stHeader"] {{
         display: none;
@@ -41,7 +41,7 @@ st.markdown(
     .logo {{
         position: absolute;
         top: 10px;
-        right: 10px;
+        right: 0px;
         z-index: 100;
     }}
     </style>
@@ -49,7 +49,7 @@ st.markdown(
 )
 
 # Shrink the image by setting the width (adjust for 10x smaller based on original size)
-st.image(logo_image, width=50)
+st.image(logo_image, width=100)
 # Persona selection dropdown
 persona_selected = st.selectbox("Select a Persona:", options=list(PERSONAS.keys()))
 

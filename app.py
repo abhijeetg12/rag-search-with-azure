@@ -70,7 +70,7 @@ with st.sidebar:
 
 # User input field
 st.markdown("### 🤖 Ask your Question:")
-user_input = st.text_input('Enter your question here:', 'What are Sustainability initiatives take by SLB?')
+user_input = st.text_input('Enter your question here:', 'At what temperature can I use the Ora technology')
 
 if st.button('Submit') and user_input:
 

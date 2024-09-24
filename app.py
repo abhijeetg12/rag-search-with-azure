@@ -12,7 +12,8 @@ import base64
 
 # Persona definitions
 PERSONAS = {
-    "Well Engineer": st.secrets["well_engineer"],
+
+    "TLM Manager": st.secrets["tlm_manager"],
     "PSD Manager": st.secrets["psd_manager"]
     }
 # Initialize chat history storage in session state if not already present

@@ -4,7 +4,7 @@ import streamlit as st
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
-from gpt_return import *
+from gpt_return_st import *
 from PIL import Image
 import base64
 
@@ -83,7 +83,8 @@ if st.button('Submit') and user_input:
     index_name = st.secrets["index"]
     azure_credential = AzureKeyCredential(key)
 
-   # Initialize Search Client
+# Initialize Search Client
+    print('Okay till here')
     search_client = SearchClient(endpoint=endpoint, index_name=index_name, credential=azure_credential)
 
     KB_FIELDS_CONTENT = os.environ.get("KB_FIELDS_CONTENT") or "content"
@@ -91,8 +92,8 @@ if st.button('Submit') and user_input:
     KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 
     exclude_category = None
-    filter = f"category ne '{exclude_category.replace("'", "''")}'" if exclude_category else None
-
+    # filter = f"category ne '{exclude_category.replace("'", "''")}'" if exclude_category else None
+    filter = None
     # Perform Search
     results = search_client.search(user_input,
                                    filter=filter,
